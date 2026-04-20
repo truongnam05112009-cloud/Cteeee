@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Quiz 💖</title>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+    margin:0;
+    font-family: Arial;
+    background:linear-gradient(135deg,#ffe4ec,#ffd6e7);
+}
+
+/* container fix mất chữ */
+.container{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+/* intro */
+#intro{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:#ff9ecb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    z-index:10;
+}
+
+/* layout */
+.wrap{
+    display:none;
+    flex-wrap:wrap;
+    gap:20px;
+    justify-content:center;
+}
+
+/* character */
+.character{
+    width:120px;
+    text-align:center;
+}
+.character img{
+    width:100%;
+    border-radius:20px;
+}
+
+/* card */
+.card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:20px;
+    border-radius:20px;
+}
+
+/* buttons */
+button{
+    width:100%;
+    padding:12px;
+    margin:5px 0;
+    border:none;
+    border-radius:10px;
+}
+
+/* letter */
+#letter{
+    display:none;
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    color:white;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+/* particles */
+.particle{
+    position:absolute;
+    top:-10px;
+    animation:fall linear;
+}
+@keyframes fall{
+    to{transform:translateY(100vh);}
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+    <h1>💖 LOVE QUIZ 💖</h1>
+    <button onclick="start()">Bắt đầu</button>
+</div>
+
+<div class="container">
+<div class="wrap" id="game">
+
+<div class="character">
+    <img src="https://i.imgur.com/3ZQ3ZQW.png">
+    <button onclick="hint()">💡 Gợi ý</button>
+</div>
+
+<div class="card">
+    <h2 id="q"></h2>
+    <div id="ans"></div>
+</div>
+
+</div>
+</div>
+
+<div id="letter">
+    <div onclick="openLetter()" style="border:2px solid white;padding:20px">
+        💌 Tap để mở
+    </div>
+    <h1 id="msg" style="display:none">💖 vk anh bá nhất tgioi !!! 💖</h1>
+</div>
+
+<script>
+
+// 🎵 RANDOM NHẠC (KHÔNG CẦN TẢI)
+const musicList = [
+"https://cdn.pixabay.com/download/audio/2022/03/15/audio_5a4c0a89c1.mp3",
+"https://cdn.pixabay.com/download/audio/2022/10/25/audio_946a8b4f3c.mp3",
+"https://cdn.pixabay.com/download/audio/2021/09/06/audio_91b9b1a92d.mp3"
+];
+
+let bg = new Audio();
+bg.loop = true;
+bg.volume = 0.5;
+
+function playRandomMusic(){
+    let random = musicList[Math.floor(Math.random()*musicList.length)];
+    bg.src = random;
+    bg.play().catch(()=>{});
+}
+
+// click sound
+const click = new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3");
+
+// data
+const quiz=[
+{q:"Họ thích làm gì lúc rảnh?",a:["Nghe nhạc","Chơi game","Xem phim","Lướt mạng"],h:"Xem story 📱"},
+{q:"Gu nhạc của họ?",a:["Ballad","Rap","Lofi","EDM"],h:"Caption buồn 😏"},
+{q:"Họ thích gì?",a:["Mèo","Chó","Cả hai"],h:"Avatar 🐱"},
+{q:"Họ thích đi đâu?",a:["Ở nhà","Cafe","Du lịch"],h:"Check-in 📍"},
+{q:"Gu ăn uống?",a:["Ngọt","Mặn","Ăn vặt"],h:"Story đồ ăn 🍜"}
+];
+
+let i=0;
+
+// start
+function start(){
+    document.getElementById("intro").style.display="none";
+    document.getElementById("game").style.display="flex";
+
+    playRandomMusic(); // 🎧 chạy nhạc
+    load();
+}
+
+// load
+function load(){
+    if(i>=quiz.length){
+        bg.pause();
+
+        setTimeout(()=>{
+            document.getElementById("letter").style.display="flex";
+            heartEffect();
+            playRandomMusic(); // 💖 nhạc kết
+        },1000);
+
+        return;
+    }
+
+    let q=quiz[i];
+    document.getElementById("q").innerText=q.q;
+
+    let box=document.getElementById("ans");
+    box.innerHTML="";
+
+    q.a.forEach(x=>{
+        let b=document.createElement("button");
+        b.innerText=x;
+
+        b.onclick=()=>{
+            click.play();
+            i++;
+            load();
+        };
+
+        box.appendChild(b);
+    });
+}
+
+// hint
+function hint(){
+    alert(quiz[i].h);
+}
+
+// mở thư
+function openLetter(){
+    document.querySelector("#letter div").style.display="none";
+    document.getElementById("msg").style.display="block";
+}
+
+// tim
+function heartEffect(){
+    setInterval(()=>{
+        let h=document.createElement("div");
+        h.className="particle";
+        h.innerText="💖";
+        h.style.left=Math.random()*100+"%";
+        h.style.animationDuration=(3+Math.random()*3)+"s";
+
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+    },200);
+}
+
+// tuyết
+setInterval(()=>{
+    let s=document.createElement("div");
+    s.className="particle";
+    s.innerText="❄";
+    s.style.left=Math.random()*100+"%";
+    s.style.animationDuration=(3+Math.random()*3)+"s";
+
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),6000);
+},200);
+
+</script>
+
+</body>
+  </html>
